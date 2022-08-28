@@ -2,37 +2,36 @@ package items;
 
 import land.Land;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Drop extends Land implements EquipmentPool {
-    public static final String RESET = "\033[0m";
-    public static final String RED_BOLD = "\033[1;31m";
-    Map<Integer,Equipment> drops = new HashMap();
+    ArrayList<Equipment> drops = new ArrayList<Equipment>();
 
-    public Drop(int[] position) {
-        super(position, RED_BOLD + "D" + RESET);
+    public Drop(int y,int x) {
+        super(y,x, "D");
 
         int count = (int)(Math.random()*3)+1;
         for(int i=1; i<=count;i++){
-            this.drops.put(i,selectRandomEquipment());
+            this.drops.add(selectRandomEquipment());
         }
     }
 
-    public Map<Integer, Equipment> getDrops() {
+    public ArrayList<Equipment> getDrops() {
         return drops;
     }
 
-    public void setDrops(Map<Integer, Equipment> drops) {
+    public void setDrops(ArrayList<Equipment> drops) {
         this.drops = drops;
     }
 
     @Override
     public String toString() {
         String result = "";
-        for (Integer key: drops.keySet()){
-            result += "ELEMENT: " + key + "\n";
-            result += drops.get(key).toString() + "\n\n";
+        for (int i=0;i<drops.size();i++){
+            result += "ELEMENT: " + (i+1) + "\n";
+            result += drops.get(i).toString() + "\n\n";
         }
         return result;
     }

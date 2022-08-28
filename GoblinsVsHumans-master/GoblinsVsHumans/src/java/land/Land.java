@@ -2,18 +2,18 @@ package land;
 
 public class Land extends Location {
 
-    public Land(int[] position){
-        super(position,"*");
+    public Land(int x, int y, String symbol) {
+        super(x, y, symbol);
     }
-    public Land(int[] position,String symbol) {
-        super(position, symbol);
+    public Land(int x, int y) {
+        super(x, y, "*");
     }
 
     @Override
     public String toString() {
         String result = "";
         result += "Symbol: " + this.getSymbol() + "\n";
-        result += "Position: " + "x = " + this.getPosition()[1] + ", " + "y = " + this.getPosition()[0] + "\n";
+        result += "Position: " + "x = " + this.getY() + ", " + "y = " + this.getX() + "\n";
         return result;
     }
 }

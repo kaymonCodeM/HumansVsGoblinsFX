@@ -22,7 +22,7 @@ public interface EquipmentPool {
                           new Equipment("Silver Helmet",Equipment.Role.DEFEND,Equipment.Type.HELMET,3,0),
                           new Equipment("Spiked Shield",Equipment.Role.DEFEND,Equipment.Type.SHIELD,3,2),
                           new Equipment("Invisible robe",Equipment.Role.DEFEND,Equipment.Type.CHEST,2,3),
-                          new Equipment("Steal Globes",Equipment.Role.DEFEND,Equipment.Type.GLOVES,3,-1),
+                          new Equipment("Steal Gloves",Equipment.Role.DEFEND,Equipment.Type.GLOVES,3,-1),
                           new Equipment("Beautiful Mask",Equipment.Role.DEFEND,Equipment.Type.HELMET,1,2),
                           new Equipment("Boots that go nowhere",Equipment.Role.DEFEND,Equipment.Type.BOOTS,4,-1)};
 

@@ -8,15 +8,14 @@ import java.util.Map;
 
 public class Player extends Land {
 
-    public static final String RESET = "\033[0m";
-    public static final String PURPLE_BOLD = "\033[1;35m";
+
     private int Health = 8;
     private int strength = 3;
 
     private Map<Equipment.Type,Equipment> inventory = new HashMap<>();
 
-    public Player(int[] position) {
-        super(position,PURPLE_BOLD + "P" + RESET);
+    public Player(int y,int x) {
+        super(y,x,"P");
     }
 
     public int getHealth() {
@@ -68,7 +67,7 @@ public class Player extends Land {
     public String toString() {
         String result = "";
         result += "Symbol: " + this.getSymbol() + "\n";
-        result += "Position: " + "x = " + this.getPosition()[1] + ", " + "y = " + this.getPosition()[0] + "\n";
+        result += "Position: " + "y = " + this.getY() + ", " + "x = " + this.getX() + "\n";
         result += "Health: " + this.getHealth() + "\n";
         result += "Strength: " + this.getStrength() + "\n\n";
         result += "Equipments: " + "\n";
@@ -79,5 +78,9 @@ public class Player extends Land {
             result += this.inventory.get(key).toString() + "\n";
         }
         return result;
+    }
+
+    public void playerAttackGoblin(Player player,Goblin goblin){
+
     }
 }

@@ -75,7 +75,12 @@ public class ControllerFX extends Application {
     //Event Handler to select equipment
     private EventHandler<KeyEvent> eventHandlerSelectEquipment;
 
-    private void setupFXGame(Land[][] gameBoard){
+    private int rounds =0;
+
+    private int addHuman = 0;
+
+
+    public void setupFXGame(Land[][] gameBoard){
         gamePane = new Pane();
         gamePane.setPrefSize(GAME_WIDTH,GAME_HEIGHT);
 
@@ -142,7 +147,7 @@ public class ControllerFX extends Application {
         return result;
     }
 
-    private Land move(String direction,Land land){
+    public Land move(String direction,Land land){
         swapLand(land.getY()+ " " + land.getX(),direction);
         int[] directionToInt = Arrays.stream(direction.split(" ")).mapToInt(Integer::parseInt).toArray();
         land.setY(directionToInt[0]);
@@ -201,7 +206,7 @@ public class ControllerFX extends Application {
         return destination;
     }
 
-    private boolean movePlayer(Direction direction){
+    public boolean movePlayer(Direction direction){
 
         int curY = player.getY();
         int curX = player.getX();
@@ -218,6 +223,9 @@ public class ControllerFX extends Application {
                 String combatResult = Combat.playerVsGoblin(player,curGoblin);
                 if (player.getHealth()<=0){
                     contactText.setText(combatResult);
+                    gameBoard = new GameBoard();
+                    setRounds(0);
+                    setAddHuman(0);
                     newGame();
                     return false;
                 } else if (curGoblin.getHealth()<=0) {
@@ -272,7 +280,23 @@ public class ControllerFX extends Application {
             int curX = curGoblin.getX();
             Goblin newGoblin = null;
 
-            if(player.getY()<curY && !findClosestNodeDirection(key,"*",Direction.NORTH).isEmpty()){
+            String curPlayer = findClosestNode(key,"P");
+            if (!curPlayer.isEmpty()) {
+                String combatResult = Combat.playerVsGoblin(player, curGoblin);
+                if (player.getHealth() <= 0) {
+                    contactText.setText(combatResult);
+                    gameBoard = new GameBoard();
+                    setRounds(0);
+                    setAddHuman(0);
+                    newGame();
+                    return;
+                } else if (curGoblin.getHealth() <= 0) {
+                    contactText.setText(combatResult);
+                    removeGoblin(curGoblin);
+                    iterator.remove();
+                    createChest();
+                }
+            }else if (player.getY()<curY && !findClosestNodeDirection(key,"*",Direction.NORTH).isEmpty()){
                 newGoblin = (Goblin) move((curY-1)+ " "+ curX,curGoblin);
             } else if (player.getY()>curY && !findClosestNodeDirection(key,"*",Direction.SOUTH).isEmpty()) {
                 newGoblin = (Goblin) move((curY+1)+ " "+ curX,curGoblin);
@@ -280,23 +304,8 @@ public class ControllerFX extends Application {
                 newGoblin = (Goblin) move(curY+ " "+ (curX-1),curGoblin);
             }else if (player.getX()>curX && !findClosestNodeDirection(key,"*",Direction.EAST).isEmpty()) {
                 newGoblin = (Goblin) move(curY+ " "+ (curX+1),curGoblin);
-            } else {
-                String curPlayer = findClosestNode(key,"P");
-                if (!curPlayer.isEmpty()){
-                    String combatResult = Combat.playerVsGoblin(player,curGoblin);
-                    if (player.getHealth()<=0){
-                        contactText.setText(combatResult);
-                        newGame();
-                        return;
-                    } else if (curGoblin.getHealth()<=0) {
-                        contactText.setText(combatResult);
-                        removeGoblin(curGoblin);
-                        iterator.remove();
-                        createChest();
-                    }
-                }else{
-                    newGoblin = curGoblin;
-                }
+            }else{
+                newGoblin = curGoblin;
             }
             if (newGoblin!=null) {
                 result.put(newGoblin.getY() + " " + newGoblin.getX(), newGoblin);
@@ -361,11 +370,9 @@ public class ControllerFX extends Application {
         drops.clear();
         chests.clear();
         locateNodes.clear();
-        gameBoard = new GameBoard();
         gameBoard.setupGameBoard();
         setupFXGame(gameBoard.getGameWorld());
         container.getChildren().set(0,gamePane);
-
         equipmentText.setText("");
         playerInfo.setText("********************************************\n" + player.toString());
         if(eventHandlerSelectEquipment!=null){
@@ -442,12 +449,24 @@ public class ControllerFX extends Application {
         return player;
     }
 
+    public Map<String, Text> getLocateNodes() {
+        return locateNodes;
+    }
+
     public void setPlayer(Player player) {
         this.player = player;
     }
 
     public void setGoblins(Map<String, Goblin> goblins) {
         this.goblins = goblins;
+    }
+
+    public void setRounds(int rounds) {
+        this.rounds = rounds;
+    }
+
+    public void setAddHuman(int addHuman) {
+        this.addHuman = addHuman;
     }
 
     @Override
@@ -477,11 +496,22 @@ public class ControllerFX extends Application {
                         playerInfo.setText("********************************************\n" + player.toString());
                     }
                     if (goblins.isEmpty()){
-                        contactText.setText("Great Job You have Won! All the Goblins are gone!");
+                        contactText.setText("Great Job You have Won! All the Goblins have been killed within the round but now there are even more Goblins!\n");
+                        gameBoard = new GameBoard();
+                        rounds++;
+                        if((rounds +1)%3==0){
+                            contactText.setText(contactText.getText() +"\nYou have entered round "+(rounds+1)+" as a reward we have recruited an extra human for you!\nThis will happen for ever 3 rounds so don't mess this up...");
+                            addHuman++;
+                        }
+                        gameBoard.setNumberOfHumans(gameBoard.getNumberOfHumans() + addHuman);
+                        gameBoard.setNumberOfGoblins(gameBoard.getNumberOfGoblins()+ rounds);
                         newGame();
                     }
                     if(player.getHealth()<=0 || findClosestNode(player.getY()+" "+ player.getX(),"*").isEmpty()){
                         contactText.setText("Your are dead or rotting away for being trapped! You have lost.");
+                        gameBoard = new GameBoard();
+                        setRounds(0);
+                        setAddHuman(0);
                         newGame();
                     }
                 }else {

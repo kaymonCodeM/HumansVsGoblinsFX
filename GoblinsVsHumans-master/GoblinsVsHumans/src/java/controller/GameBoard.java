@@ -9,7 +9,9 @@ import land.Land;
 
 
 public class GameBoard {
-    private final Land[][] gameWorld = new Land[22][22];
+    private  Land[][] gameWorld = new Land[22][22];
+    private int numberOfGoblins = 5;
+    private int numberOfHumans = 4;
 
     public void setupGameBoard(){
         for (int i=0;i<22;i++){
@@ -36,7 +38,7 @@ public class GameBoard {
         }
 
         //Create 4 Humans
-        for (int i=0;i<4;i++){
+        for (int i=0;i<numberOfHumans;i++){
             int x = (int) (Math.random() * 20)+1;
             int y = (int) (Math.random() * 20)+1;
             if(this.gameWorld[y][x].getSymbol().compareTo("|")!=0 && !(this.gameWorld[y][x] instanceof Human)){
@@ -48,7 +50,7 @@ public class GameBoard {
         }
 
         //Create 5 Goblins
-        for (int i=0;i<5;i++){
+        for (int i=0;i<numberOfGoblins;i++){
             int x = (int) (Math.random() * 20)+1;
             int y = (int) (Math.random() * 20)+1;
             if(this.gameWorld[y][x].getSymbol().compareTo("|")!=0 && !(this.gameWorld[y][x] instanceof Human) && !(this.gameWorld[y][x] instanceof Goblin)){
@@ -72,20 +74,28 @@ public class GameBoard {
 
     }
 
-    public void createChest() {
-        while (true) {
-            int x = (int) (Math.random() * 20) + 1;
-            int y = (int) (Math.random() * 20) + 1;
-            if (this.gameWorld[y][x].getSymbol().contains("*")) {
-                TreasureChest c = new TreasureChest(y, x);
-                this.gameWorld[y][x] = c;
-                break;
-            }
-        }
-    }
-
     public Land[][] getGameWorld() {
         return gameWorld;
+    }
+
+    public int getNumberOfGoblins() {
+        return numberOfGoblins;
+    }
+
+    public int getNumberOfHumans() {
+        return numberOfHumans;
+    }
+
+    public void setGameWorld(Land[][] gameWorld) {
+        this.gameWorld = gameWorld;
+    }
+
+    public void setNumberOfGoblins(int numberOfGoblins) {
+        this.numberOfGoblins = numberOfGoblins;
+    }
+
+    public void setNumberOfHumans(int numberOfHumans) {
+        this.numberOfHumans = numberOfHumans;
     }
 }
 

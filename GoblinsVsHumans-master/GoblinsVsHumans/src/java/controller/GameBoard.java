@@ -3,13 +3,12 @@ package controller;
 import creatures.Goblin;
 import creatures.Human;
 import creatures.Player;
-import items.TreasureChest;
 import land.Land;
 
 
 
 public class GameBoard {
-    private  Land[][] gameWorld = new Land[22][22];
+    private final Land[][] gameWorld = new Land[22][22];
     private int numberOfGoblins = 5;
     private int numberOfHumans = 4;
 
@@ -84,10 +83,6 @@ public class GameBoard {
 
     public int getNumberOfHumans() {
         return numberOfHumans;
-    }
-
-    public void setGameWorld(Land[][] gameWorld) {
-        this.gameWorld = gameWorld;
     }
 
     public void setNumberOfGoblins(int numberOfGoblins) {

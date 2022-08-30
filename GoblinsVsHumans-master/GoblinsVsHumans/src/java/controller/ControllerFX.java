@@ -79,7 +79,7 @@ public class ControllerFX extends Application {
 
     private int addHuman = 0;
 
-
+    //--module-path "C:\javafx18\javafx-sdk-18.0.2\lib" --add-modules javafx.controls,javafx.fxml
     public void setupFXGame(Land[][] gameBoard){
         gamePane = new Pane();
         gamePane.setPrefSize(GAME_WIDTH,GAME_HEIGHT);
@@ -269,7 +269,7 @@ public class ControllerFX extends Application {
         return true;
     }
 
-    private void goblinsPursuePlayer(){
+    public void goblinsPursuePlayer(){
         Map<String,Goblin> result = new HashMap<>();
         Iterator<String> iterator = goblins.keySet().iterator();
         while (iterator.hasNext()){
@@ -455,12 +455,32 @@ public class ControllerFX extends Application {
         return locateNodes;
     }
 
+    public Map<String, Goblin> getGoblins() {
+        return goblins;
+    }
+
     public void setPlayer(Player player) {
         this.player = player;
     }
 
     public void setGoblins(Map<String, Goblin> goblins) {
         this.goblins = goblins;
+    }
+
+    public Text getContactText() {
+        return contactText;
+    }
+
+    public HBox getContainer() {
+        return container;
+    }
+
+    public Map<String, Human> getHumans() {
+        return humans;
+    }
+
+    public Map<String, TreasureChest> getChests() {
+        return chests;
     }
 
     public void setRounds(int rounds) {
@@ -473,6 +493,14 @@ public class ControllerFX extends Application {
 
     public void setAlertText(Text alertText) {
         this.alertText = alertText;
+    }
+
+    public void setContactText(Text contactText) {
+        this.contactText = contactText;
+    }
+
+    public void setContainer(HBox container) {
+        this.container = container;
     }
 
     @Override

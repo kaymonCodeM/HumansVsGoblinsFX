@@ -1,9 +1,10 @@
 package land;
 
 public abstract class Location {
-    private int x;
-    private int y;
-    private String symbol;
+    protected int y;
+    protected int x;
+    protected String symbol;
+
 
     public Location(int y, int x, String symbol) {
         this.y = y;
@@ -11,27 +12,16 @@ public abstract class Location {
         this.symbol = symbol;
     }
 
-    public int getX() {
-        return x;
-    }
+    abstract int getX();
 
-    public int getY() {
-        return y;
-    }
+    abstract int getY();
 
-    public String getSymbol() {
-        return symbol;
-    }
+    abstract String getSymbol();
 
-    public void setX(int x) {
-        this.x = x;
-    }
+    abstract void setSymbol(String symbol);
 
-    public void setY(int y) {
-        this.y = y;
-    }
+    abstract void setX(int x);
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
+    abstract void setY(int y);
+
 }

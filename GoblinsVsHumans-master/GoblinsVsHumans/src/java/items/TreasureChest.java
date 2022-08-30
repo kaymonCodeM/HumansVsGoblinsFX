@@ -3,15 +3,14 @@ package items;
 import land.Land;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TreasureChest extends Land implements EquipmentPool {
 
+    private String symbol = "C";
     ArrayList<Equipment> chest = new ArrayList<>();
 
     public TreasureChest(int y,int x) {
-        super(y,x, "C");
+        super(y,x);
 
         int count = (int)(Math.random()*3)+1;
         for(int i=1; i<=count;i++){

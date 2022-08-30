@@ -261,7 +261,6 @@ public class ControllerFX extends Application {
                     return false;
                 }
             } else {
-                //Contact Human
                 alertText.setText("Something is blocking you from going there! Hurry up Goblins are Coming!");
                 return false;
             }

@@ -1,42 +1,45 @@
 package land;
 
-public class Land extends Location {
+public class Land {
+
+    private int y;
+    private int x;
+    private String symbol;
     public Land(int y, int x, String symbol) {
-        super(y, x, symbol);
-    }
-
-    public Land(int y, int x) {
-        super(y, x, "*");
-    }
-
-    @Override
-    public int getX() {
-        return this.x;
-    }
-
-    @Override
-    public int getY() {
-        return this.y;
-    }
-
-    @Override
-    public String getSymbol() {
-        return this.symbol;
-    }
-
-    @Override
-    public void setSymbol(String symbol) {
+        this.y=y;
+        this.x=x;
         this.symbol = symbol;
     }
 
-    @Override
+    public Land(int y, int x) {
+        this.y = y;
+        this.x = x;
+        this.symbol = "*";
+    }
+
+
+    public int getY() {
+        return y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
     public void setX(int x) {
         this.x = x;
     }
 
-    @Override
-    public void setY(int y){
-        this.y = y;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     @Override

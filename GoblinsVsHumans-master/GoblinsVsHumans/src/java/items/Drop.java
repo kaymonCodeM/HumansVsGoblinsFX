@@ -22,10 +22,6 @@ public class Drop extends Land implements EquipmentPool {
         return drops;
     }
 
-    public void setDrops(ArrayList<Equipment> drops) {
-        this.drops = drops;
-    }
-
     @Override
     public String toString() {
         String result = "";

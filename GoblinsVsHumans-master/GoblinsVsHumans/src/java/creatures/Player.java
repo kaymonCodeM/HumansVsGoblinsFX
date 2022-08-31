@@ -1,18 +1,24 @@
 package creatures;
 
+import controller.Combat;
+import controller.Direction;
+import controller.GameView;
 import items.Equipment;
 import land.Land;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Player extends Land {
+public class Player extends Land implements GameView {
 
 
     private int Health = 8;
     private int strength = 3;
 
     private Map<Equipment.Type,Equipment> inventory = new HashMap<>();
+
+    private boolean alive = true;
 
     public Player(int y,int x) {
         super(y,x,"P");
@@ -28,6 +34,15 @@ public class Player extends Land {
 
     public Map<Equipment.Type, Equipment> getInventory() {
         return inventory;
+    }
+
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     public void setHealth(int health) {
@@ -63,6 +78,65 @@ public class Player extends Land {
         inventory.put(equipment.getType(),equipment);
     }
 
+    public void attackGoblin(Goblin g){
+        String combatResult = Combat.playerVsGoblin(this,g);
+        if (this.getHealth()<=0){
+            contactText.setText(combatResult);
+            this.setAlive(false);
+        } else if (g.getHealth()<=0) {
+            contactText.setText(combatResult);
+            g.remove();
+            goblins.remove(g.getY()+ " "+g.getX());
+        }
+    }
+
+
+    // Return equipment if contact will equipment else return null;
+    public ArrayList<Equipment> moveMe(Direction direction) {
+        int curY = this.getY();
+        int curX = this.getX();
+        String destination = findClosestNodeDirection(curY + " " + curX, "*", direction);
+        if (!destination.isEmpty()) {
+            move(destination, this);
+        } else {
+            String chestPosition = findClosestNodeDirection(curY + " " + curX, "C", direction);
+            String dropPosition = findClosestNodeDirection(curY + " " + curX, "D", direction);
+            String humanPosition = findClosestNodeDirection(curY + " " + curX, "H", direction);
+            if (!chestPosition.isEmpty()) {
+                contactText.setText("You have made contact with a chest:");
+                ArrayList<Equipment> items = chests.get(chestPosition).getChest();
+                if (!items.isEmpty()) {
+                    return items;
+                } else {
+                    alertText.setText("The chest is empty! Hurry up Goblins are Coming!");
+                    return null;
+                }
+            } else if (!dropPosition.isEmpty()) {
+                contactText.setText("You have made contact with a drop:");
+                ArrayList<Equipment> items = drops.get(dropPosition).getDrops();
+                if (!items.isEmpty()) {
+                    return items;
+                } else {
+                    alertText.setText("The drop is empty! Hurry up Goblins are Coming!");
+                    return null;
+                }
+            } else if (!humanPosition.isEmpty()) {
+                contactText.setText("You have made contact with a human:");
+                ArrayList<Equipment> items = humans.get(humanPosition).getInventory();
+                if (!items.isEmpty()) {
+                    return items;
+                } else {
+                    alertText.setText("The Humans inventory is empty! Hurry up Goblins are Coming!");
+                    return null;
+                }
+            } else {
+                alertText.setText("Something is blocking you from going there! Hurry up Goblins are Coming!");
+                return null;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         String result = "";
@@ -80,7 +154,4 @@ public class Player extends Land {
         return result;
     }
 
-    public void playerAttackGoblin(Player player,Goblin goblin){
-
-    }
 }

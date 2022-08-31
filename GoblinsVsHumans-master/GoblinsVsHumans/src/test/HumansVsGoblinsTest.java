@@ -51,7 +51,6 @@ public class HumansVsGoblinsTest {
         assertTrue(controllerFX.movePlayer(Direction.WEST),"Move Player West failed");
         assertTrue(controllerFX.movePlayer(Direction.EAST),"Move Player East failed");
 
-        controllerFX.setAlertText(new Text());
         controllerFX.getLocateNodes().get(2+" "+3).setText("|");
         controllerFX.getLocateNodes().get(4+" "+3).setText("|");
         controllerFX.getLocateNodes().get(3+" "+2).setText("|");
@@ -61,7 +60,6 @@ public class HumansVsGoblinsTest {
         assertFalse(controllerFX.movePlayer(Direction.WEST),"Moved into wall West failed");
         assertFalse(controllerFX.movePlayer(Direction.EAST),"Moved into wall East failed");
 
-        controllerFX.setContactText(new Text(""));
         controllerFX.setContainer(new HBox());
         controllerFX.getContainer().getChildren().add(new Pane());
         controllerFX.getGoblins().put(2 + " "+ 3,new Goblin(2,3));
@@ -147,7 +145,6 @@ public class HumansVsGoblinsTest {
     @DisplayName("Test Goblin pursue player")
     @Test
     void goblinsPursuePlayer(){
-        controllerFX.setContactText(new Text(""));
         controllerFX.setContainer(new HBox());
         controllerFX.getContainer().getChildren().add(new Pane());
 
@@ -170,7 +167,6 @@ public class HumansVsGoblinsTest {
     @DisplayName("Test Humans attack the goblins")
     @Test
     void humansAttackGoblins(){
-        controllerFX.setContactText(new Text(""));
         controllerFX.setContainer(new HBox());
         controllerFX.getContainer().getChildren().add(new Pane());
 
@@ -189,7 +185,6 @@ public class HumansVsGoblinsTest {
     @DisplayName("Test chest creation")
     @Test
     void createChest(){
-        controllerFX.setContactText(new Text());
         controllerFX.createChest();
         assertFalse(controllerFX.getChests().isEmpty(), "Create chest failed");
     }
@@ -197,20 +192,18 @@ public class HumansVsGoblinsTest {
     @DisplayName("Test remove Human")
     @Test
     void removeHuman(){
-        controllerFX.setContactText(new Text());
         controllerFX.getHumans().put(3+" "+3,new Human(3,3));
         controllerFX.getLocateNodes().get(3 + " "+3).setText("H");
-        controllerFX.removeHuman(controllerFX.getHumans().get(3+ " "+3));
+        controllerFX.getHumans().get(3+ " "+3).remove();
         assertEquals("*",controllerFX.getLocateNodes().get(3 + " "+ 3).getText(),"Test remove human failed");
     }
 
     @DisplayName("Test remove Goblin")
     @Test
     void removeGoblin(){
-        controllerFX.setContactText(new Text());
         controllerFX.getGoblins().put(3+" "+3,new Goblin(3,3));
         controllerFX.getLocateNodes().get(3 + " "+3).setText("G");
-        controllerFX.removeGoblin(controllerFX.getGoblins().get(3+ " "+3));
+        controllerFX.getGoblins().get(3+ " "+3).remove();
         assertEquals("D",controllerFX.getLocateNodes().get(3 + " "+ 3).getText(),"Test remove Goblin failed");
     }
 

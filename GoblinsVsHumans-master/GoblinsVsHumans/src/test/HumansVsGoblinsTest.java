@@ -12,7 +12,6 @@ import items.TreasureChest;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import land.Land;
 import org.junit.jupiter.api.*;
 

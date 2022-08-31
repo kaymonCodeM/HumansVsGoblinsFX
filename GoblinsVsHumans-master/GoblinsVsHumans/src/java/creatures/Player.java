@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Player extends Land implements GameView {
+public class Player extends Land implements GameView,Attack {
 
 
     private int Health = 8;
@@ -78,17 +78,21 @@ public class Player extends Land implements GameView {
         inventory.put(equipment.getType(),equipment);
     }
 
-    public void attackGoblin(Goblin g){
-        String combatResult = Combat.playerVsGoblin(this,g);
+    @Override
+    public boolean attack(Land g) {
+        String combatResult = Combat.playerVsGoblin(this, (Goblin) g);
         if (this.getHealth()<=0){
             contactText.setText(combatResult);
             this.setAlive(false);
-        } else if (g.getHealth()<=0) {
+            return false;
+        } else if (((Goblin) g).getHealth()<=0) {
             contactText.setText(combatResult);
-            g.remove();
+            ((Goblin) g).remove();
             goblins.remove(g.getY()+ " "+g.getX());
         }
+        return true;
     }
+
 
 
     // Return equipment if contact will equipment else return null;
@@ -153,5 +157,4 @@ public class Player extends Land implements GameView {
         }
         return result;
     }
-
 }

@@ -145,7 +145,7 @@ public class ControllerFX extends Application implements GameView {
         int curX = player.getX();
         String goblinPosition = findClosestNodeDirection(curY+ " "+curX,"G",direction);
         if(!goblinPosition.isEmpty()){
-            player.attackGoblin(goblins.get(goblinPosition));
+            player.attack(goblins.get(goblinPosition));
             return player.isAlive();
         }else {
             ArrayList<Equipment> items = this.player.moveMe(direction);
@@ -187,7 +187,7 @@ public class ControllerFX extends Application implements GameView {
             Human curHuman = humans.get(key);
             Goblin curGoblin = goblins.get(findClosestNode(key,"G"));
             if (curGoblin!=null) {
-                if (!curHuman.attackGoblin(curGoblin)){
+                if (!curHuman.attack(curGoblin)){
                     iterator.remove();
                 }
                 createChest();

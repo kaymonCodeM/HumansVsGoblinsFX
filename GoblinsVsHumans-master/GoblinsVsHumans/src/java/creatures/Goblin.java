@@ -7,7 +7,7 @@ import items.Drop;
 import javafx.scene.paint.Color;
 import land.Land;
 
-public class Goblin extends Land implements GameView {
+public class Goblin extends Land implements GameView,Attack {
 
     private int health = 6;
     private int strength = 2;
@@ -34,12 +34,12 @@ public class Goblin extends Land implements GameView {
         this.health = health;
     }
 
-    //Attack player and returns if goblin is alive or not
-    public boolean attackPlayer(Player player){
-        String combatResult = Combat.playerVsGoblin(player, this);
-        if (player.getHealth() <= 0) {
+    @Override
+    public boolean attack(Land player) {
+        String combatResult = Combat.playerVsGoblin((Player)player, this);
+        if (((Player) player).getHealth() <= 0) {
             contactText.setText(combatResult);
-            player.setAlive(false);
+            ((Player) player).setAlive(false);
         } else if (this.getHealth() <= 0) {
             contactText.setText(combatResult);
             this.remove();
@@ -48,7 +48,6 @@ public class Goblin extends Land implements GameView {
         return true;
     }
 
-
     //Moves the goblin and returns if the goblin moves
     public boolean moveToPlayer(Player player){
         int curY = this.getY();
@@ -56,7 +55,7 @@ public class Goblin extends Land implements GameView {
 
         String curPlayer = findClosestNode(curY + " "+ curX,"P");
         if (!curPlayer.isEmpty()) {
-           return attackPlayer(player);
+           return attack(player);
 
         }else if (player.getY()<curY && !findClosestNodeDirection(curY + " "+ curX,"*", Direction.NORTH).isEmpty()){
             move((curY-1)+ " "+ curX,this);
@@ -93,6 +92,5 @@ public class Goblin extends Land implements GameView {
         result += drops.toString();
         return result;
     }
-
 
 }

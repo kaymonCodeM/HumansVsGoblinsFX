@@ -9,7 +9,7 @@ import land.Land;
 
 import java.util.ArrayList;
 
-public class Human extends Land implements EquipmentPool, GameView {
+public class Human extends Land implements EquipmentPool, GameView, Attack {
 
     private int health = 8;
     private int strength = 3;
@@ -41,30 +41,31 @@ public class Human extends Land implements EquipmentPool, GameView {
     
 
     //Attack goblin and returns if human is alive or not
-    public boolean attackGoblin(Goblin g){
-            String combatResult = Combat.goblinVsHuman(this,g);
-            if (g.getHealth()<=0 && this.getHealth()<=0){
-                contactText.setText(combatResult);
-                //remove Human
-                this.remove();
+    @Override
+    public boolean attack(Land g) {
+        String combatResult = Combat.goblinVsHuman(this, (Goblin) g);
+        if (((Goblin) g).getHealth()<=0 && this.getHealth()<=0){
+            contactText.setText(combatResult);
+            //remove Human
+            this.remove();
 
-                //remove goblin
-                g.remove();
-                goblins.remove(g.getY()+ " "+ g.getX());
+            //remove goblin
+            ((Goblin) g).remove();
+            goblins.remove(g.getY()+ " "+ g.getX());
 
-                return false;
+            return false;
 
-            } else if (this.getHealth()<=0) {
-                contactText.setText(combatResult);
-                this.remove();
+        } else if (this.getHealth()<=0) {
+            contactText.setText(combatResult);
+            this.remove();
 
-                return false;
+            return false;
 
-            } else if (g.getHealth()<=0) {
-                contactText.setText(combatResult);
-                g.remove();
-                goblins.remove(g.getY()+ " "+ g.getX());
-            }
+        } else if (((Goblin) g).getHealth()<=0) {
+            contactText.setText(combatResult);
+            ((Goblin) g).remove();
+            goblins.remove(g.getY()+ " "+ g.getX());
+        }
         return true;
     }
 
@@ -87,4 +88,5 @@ public class Human extends Land implements EquipmentPool, GameView {
         }
         return result;
     }
+
 }

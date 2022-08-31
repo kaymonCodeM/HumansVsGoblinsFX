@@ -22,8 +22,8 @@ public class GameBoard {
         for (int i = 0; i< BOARD_SIZE; i++){
             this.gameWorld[0][i].setSymbol("|");
             this.gameWorld[i][0].setSymbol("|");
-            this.gameWorld[21][i].setSymbol("|");
-            this.gameWorld[i][21].setSymbol("|");
+            this.gameWorld[BOARD_SIZE-1][i].setSymbol("|");
+            this.gameWorld[i][BOARD_SIZE-1].setSymbol("|");
         }
 
         //Create 40 walls

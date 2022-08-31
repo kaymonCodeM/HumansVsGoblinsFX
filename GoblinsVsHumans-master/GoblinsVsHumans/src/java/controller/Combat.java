@@ -47,9 +47,9 @@ public class Combat {
             playerAttackGoblin(p,g);
         }
         if (p.getHealth()<=0 && g.getHealth()<=0){
-            result += "You and the goblin Killed each other: GAME OVER!" + "\n";
+            result += "You and the goblin Killed each other." + "\n";
         } else if (p.getHealth()<=0) {
-            result += "You have been killed by the Goblin: GAME OVER!" + "\n";
+            result += "You have been killed by the Goblin." + "\n";
         }else if(g.getHealth()<=0){
             result += "Great Job you have killed the goblin." + "\n";
         }

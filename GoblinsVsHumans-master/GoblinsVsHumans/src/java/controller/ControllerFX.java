@@ -349,7 +349,7 @@ public class ControllerFX extends Application implements GameView {
                 if (direction!=null){
                     if(movePlayer(direction)){
                         goblinsPursuePlayer();
-                        if(player.isAlive()) {
+                        if(player.isAlive() && player.getHealth()>0) {
                             humansAttackGoblins();
                             playerInfo.setText("********************************************\n" + player.toString());
                         }
@@ -367,7 +367,7 @@ public class ControllerFX extends Application implements GameView {
                         newGame();
                     }
                     if(player.getHealth()<=0 || findClosestNode(player.getY()+" "+ player.getX(),"*").isEmpty() || !player.isAlive()){
-                        contactText.setText("Your are dead or rotting away for being trapped! You have lost.");
+                        contactText.setText(contactText.getText() + "You are Dead or rotting away. GAME OVER!");
                         gameBoard = new GameBoard();
                         setRounds(0);
                         setAddHuman(0);

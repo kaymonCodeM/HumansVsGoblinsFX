@@ -10,7 +10,8 @@ public class Drop extends Land implements EquipmentPool {
     ArrayList<Equipment> drops = new ArrayList<Equipment>();
 
     public Drop(int y,int x) {
-        super(y,x, "D");
+        super(y,x);
+        super.setSymbol("D");
 
         int count = (int)(Math.random()*3)+1;
         for(int i=1; i<=count;i++){

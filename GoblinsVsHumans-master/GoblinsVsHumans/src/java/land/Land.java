@@ -1,22 +1,16 @@
 package land;
 
-public class Land {
+public class Land{
 
     private int y;
     private int x;
     private String symbol;
-    public Land(int y, int x, String symbol) {
-        this.y=y;
-        this.x=x;
-        this.symbol = symbol;
-    }
 
     public Land(int y, int x) {
-        this.y = y;
-        this.x = x;
+        this.y=y;
+        this.x=x;
         this.symbol = "*";
     }
-
 
     public int getY() {
         return y;
@@ -29,6 +23,7 @@ public class Land {
     public String getSymbol() {
         return symbol;
     }
+
 
     public void setY(int y) {
         this.y = y;
@@ -49,4 +44,5 @@ public class Land {
         result += "Position: " + "x = " + this.getY() + ", " + "y = " + this.getX() + "\n";
         return result;
     }
+
 }

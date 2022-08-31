@@ -2,35 +2,27 @@ package creatures;
 
 import controller.Combat;
 import controller.Direction;
-import controller.GameView;
 import items.Equipment;
-import land.Land;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Player extends Land implements GameView,Attack {
+public class Player extends Creature{
 
 
-    private int Health = 8;
-    private int strength = 3;
-
-    private Map<Equipment.Type,Equipment> inventory = new HashMap<>();
+    private final Map<Equipment.Type,Equipment> inventory = new HashMap<>();
 
     private boolean alive = true;
 
     public Player(int y,int x) {
-        super(y,x,"P");
+        super(y,x);
+        super.setSymbol("P");
+        super.setHealth(8);
+        super.setStrength(3);
+
     }
 
-    public int getHealth() {
-        return Health;
-    }
-
-    public int getStrength() {
-        return strength;
-    }
 
     public Map<Equipment.Type, Equipment> getInventory() {
         return inventory;
@@ -43,14 +35,6 @@ public class Player extends Land implements GameView,Attack {
 
     public void setAlive(boolean alive) {
         this.alive = alive;
-    }
-
-    public void setHealth(int health) {
-        Health = health;
-    }
-
-    public void setStrength(int strength) {
-        this.strength = strength;
     }
 
 
@@ -79,13 +63,13 @@ public class Player extends Land implements GameView,Attack {
     }
 
     @Override
-    public boolean attack(Land g) {
+    public boolean attack(Creature g) {
         String combatResult = Combat.playerVsGoblin(this, (Goblin) g);
         if (this.getHealth()<=0){
             contactText.setText(combatResult);
             this.setAlive(false);
             return false;
-        } else if (((Goblin) g).getHealth()<=0) {
+        } else if (g.getHealth()<=0) {
             contactText.setText(combatResult);
             ((Goblin) g).remove();
             goblins.remove(g.getY()+ " "+g.getX());

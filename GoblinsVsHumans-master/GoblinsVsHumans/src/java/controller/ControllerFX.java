@@ -1,10 +1,7 @@
 package controller;
-
-
 import creatures.Goblin;
 import creatures.Human;
 import creatures.Player;
-import items.Drop;
 import items.Equipment;
 import items.TreasureChest;
 import javafx.application.Application;
@@ -97,16 +94,6 @@ public class ControllerFX extends Application implements GameView {
                         text.setText(" " + symbol + " ");
                         text.setFill(Color.DARKGREEN);
                         goblins.put(i+ " "+ j, (Goblin) gameBoard[i][j]);
-                        break;
-                    case "D":
-                        text.setText(" " + symbol + " ");
-                        text.setFill(Color.DARKRED);
-                        drops.put(i+ " "+ j, (Drop) gameBoard[i][j]);
-                        break;
-                    case "C":
-                        text.setText(" " + symbol + " ");
-                        text.setFill(Color.DARKORANGE);
-                        chests.put(i+ " "+ j, (TreasureChest) gameBoard[i][j]);
                         break;
                     default:
                         text.setText(" " + symbol + " ");

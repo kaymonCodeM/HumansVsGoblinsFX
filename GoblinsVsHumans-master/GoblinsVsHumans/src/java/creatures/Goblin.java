@@ -2,42 +2,31 @@ package creatures;
 
 import controller.Combat;
 import controller.Direction;
-import controller.GameView;
 import items.Drop;
 import javafx.scene.paint.Color;
 import land.Land;
 
-public class Goblin extends Land implements GameView,Attack {
+public class Goblin extends Creature {
 
-    private int health = 6;
-    private int strength = 2;
-    private Drop drop;
+    private final Drop drop;
 
     public Goblin(int y,int x) {
-        super(y,x, "G");
-        this.drop = new Drop(x,y);
+        super(y,x);
+        this.drop = new Drop(y,x);
+        super.setSymbol("G");
+        super.setHealth(6);
+        super.setStrength(2);
     }
 
-    public int getHealth() {
-        return health;
-    }
-
-    public int getStrength() {
-        return strength;
-    }
 
     public Drop getDrops() {
         return drop;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
     @Override
-    public boolean attack(Land player) {
+    public boolean attack(Creature player) {
         String combatResult = Combat.playerVsGoblin((Player)player, this);
-        if (((Player) player).getHealth() <= 0) {
+        if (player.getHealth() <= 0) {
             contactText.setText(combatResult);
             ((Player) player).setAlive(false);
         } else if (this.getHealth() <= 0) {

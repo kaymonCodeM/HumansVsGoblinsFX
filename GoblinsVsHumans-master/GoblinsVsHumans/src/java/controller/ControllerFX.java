@@ -88,12 +88,12 @@ public class ControllerFX extends Application implements GameView {
                     case "H":
                         text.setText(" " + symbol + " ");
                         text.setFill(Color.DARKBLUE);
-                        humans.put(i+ " "+ j, (Human) gameBoard[i][j]);
+                        HUMANS.put(i+ " "+ j, (Human) gameBoard[i][j]);
                         break;
                     case "G":
                         text.setText(" " + symbol + " ");
                         text.setFill(Color.DARKGREEN);
-                        goblins.put(i+ " "+ j, (Goblin) gameBoard[i][j]);
+                        GOBLINS.put(i+ " "+ j, (Goblin) gameBoard[i][j]);
                         break;
                     default:
                         text.setText(" " + symbol + " ");
@@ -101,7 +101,8 @@ public class ControllerFX extends Application implements GameView {
                 text.setX(x);
                 text.setY(y);
 
-                locateNodes.put(i+" "+j,text);
+
+                NODES.put(i+" "+j,text);
                 gamePane.getChildren().add(text);
             }
         }
@@ -127,32 +128,25 @@ public class ControllerFX extends Application implements GameView {
 
     //returns if a player moves or not
     public boolean movePlayer(Direction direction){
-
-        int curY = player.getY();
-        int curX = player.getX();
-        String goblinPosition = findClosestNodeDirection(curY+ " "+curX,"G",direction);
-        if(!goblinPosition.isEmpty()){
-            player.attack(goblins.get(goblinPosition));
-            return player.isAlive();
-        }else {
-            ArrayList<Equipment> items = this.player.moveMe(direction);
+        if (!this.player.moveMe(direction)) {
+            ArrayList<Equipment> items = this.player.findItem(direction);
             if(items!=null){
                 selectEquipment(items);
-            } else if ((curY+ " "+ curX).compareTo(player.getY()+ " "+ player.getX())==0) {
+            }else {
+                ALERT_TEXT.setText("There is something blocking your from moving there");
                 return false;
             }
-
         }
         return true;
     }
 
     public void goblinsPursuePlayer(){
         Map<String,Goblin> result = new HashMap<>();
-        Iterator<String> iterator = goblins.keySet().iterator();
+        Iterator<String> iterator = GOBLINS.keySet().iterator();
         while (iterator.hasNext()){
             String key = iterator.next();
-            Goblin goblin = goblins.get(key);
-            boolean goblinAlive = goblin.moveToPlayer(player);
+            Goblin goblin = GOBLINS.get(key);
+            boolean goblinAlive = goblin.moveMe(player);
             if (!player.isAlive()){
                 return;
             }
@@ -163,16 +157,16 @@ public class ControllerFX extends Application implements GameView {
                 result.put(goblin.getY() + " " + goblin.getX(), goblin);
             }
         }
-        goblins.clear();
-        goblins.putAll(result);
+        GOBLINS.clear();
+        GOBLINS.putAll(result);
     }
 
     public void humansAttackGoblins(){
-        Iterator<String> iterator = humans.keySet().iterator();
+        Iterator<String> iterator = HUMANS.keySet().iterator();
         while (iterator.hasNext()) {
             String key = iterator.next();
-            Human curHuman = humans.get(key);
-            Goblin curGoblin = goblins.get(findClosestNode(key,"G"));
+            Human curHuman = HUMANS.get(key);
+            Goblin curGoblin = curHuman.findClosestGoblin();
             if (curGoblin!=null) {
                 if (!curHuman.attack(curGoblin)){
                     iterator.remove();
@@ -187,24 +181,24 @@ public class ControllerFX extends Application implements GameView {
         while (true) {
             int y = (int) (Math.random() * 20) + 1;
             int x = (int) (Math.random() * 20) + 1;
-            if (locateNodes.get(y + " "+ x).getText().contains("*")) {
-                locateNodes.get(y + " "+ x).setText("C");
-                locateNodes.get(y + " "+ x).setFill(Color.DARKORANGE);
+            if (NODES.get(y + " "+ x).getText().contains("*")) {
+                NODES.get(y + " "+ x).setText("C");
+                NODES.get(y + " "+ x).setFill(Color.DARKORANGE);
                 chest = new TreasureChest(y,x);
-                chests.put(y + " "+ x,chest);
+                CHESTS.put(y + " "+ x,chest);
                 break;
             }
         }
-        contactText.setText(contactText.getText() + "\nRandom Chest is displayed at: y = "+ chest.getY()+ " x = "+ chest.getX());
+        CONTACT_TEXT.setText(CONTACT_TEXT.getText() + "\nRandom Chest is displayed at: y = "+ chest.getY()+ " x = "+ chest.getX());
     }
 
 
     public void newGame(){
-        goblins.clear();
-        humans.clear();
-        drops.clear();
-        chests.clear();
-        locateNodes.clear();
+        GOBLINS.clear();
+        HUMANS.clear();
+        DROPS.clear();
+        CHESTS.clear();
+        NODES.clear();
         gameBoard.setupGameBoard();
         setupFXGame(gameBoard.getGameWorld());
         container.getChildren().set(0,gamePane);
@@ -238,7 +232,7 @@ public class ControllerFX extends Application implements GameView {
         for(int i=0;i<items.size();i++){
             equipmentText.setText(equipmentText.getText()+"ELEMENT: " +  (i+1) + "\n" + items.get(i).toString()+ "\n\n");
         }
-        contactText.setText(contactText.getText() +"\nSelect Item based on the item number.\n"
+        CONTACT_TEXT.setText(CONTACT_TEXT.getText() +"\nSelect Item based on the item number.\n"
                 + "If you do not want an item just type the number 0\n"
                 + "WARNING: Any items that are of the same type will be replaced! Also a player can only have one attack item!\n");
         //set contact text
@@ -246,7 +240,7 @@ public class ControllerFX extends Application implements GameView {
             @Override
             public void handle(KeyEvent event) {
 
-                alertText.setText("");
+                ALERT_TEXT.setText("");
                 KeyCode code = event.getCode();
                 int i = keyCodeToInteger(code, items.size());
                 if (i!=-1){
@@ -259,11 +253,72 @@ public class ControllerFX extends Application implements GameView {
                     scene.addEventHandler(KeyEvent.KEY_PRESSED, eventHandlerMovePlayer);
                     clearTextInfo();
                 }else {
-                    alertText.setText("Give a valid number");
+                    ALERT_TEXT.setText("Give a valid number");
                 }
             }
         };
         scene.addEventHandler(KeyEvent.KEY_PRESSED,eventHandlerSelectEquipment);
+    }
+
+    public void clearTextInfo(){
+        CONTACT_TEXT.setText("");
+        ALERT_TEXT.setText("");
+        equipmentText.setText("");
+    }
+
+    private void setupGUI(){
+        //Main root
+        root = new VBox();
+        root.setPrefSize(ROOT_WIDTH,ROOT_HEIGHT);
+        root.setPadding(new Insets(56));
+        root.setSpacing(56);
+
+        //Container
+        container = new HBox();
+        container.setPrefSize(ROOT_WIDTH,GAME_HEIGHT);
+        container.setSpacing(56);
+
+        //Combat
+        contactPane = new Pane();
+        contactPane.setPrefSize(GAME_WIDTH,25);
+        CONTACT_TEXT.setText("Use the arrow keys to move North/South/East/West.\n"
+                + "Watch out for the goblins and you can grab items by picking up\nDrops, Chest, or Equipments from the Humans.\n"
+                + "The Humans do not move but will attack the goblins when they come near them.\n"
+                + "Good luck and have fun!");
+        contactPane.getChildren().add(CONTACT_TEXT);
+
+        //Alert
+        alertPane = new Pane();
+        alertPane.setPrefSize(GAME_WIDTH,25);
+        ALERT_TEXT.setText("");
+        ALERT_TEXT.setFill(Color.RED);
+        alertPane.getChildren().add(ALERT_TEXT);
+
+
+        //Info Pane
+        infoPane = new VBox();
+        infoPane.setPrefSize(INFO_WIDTH,INFO_HEIGHT);
+        infoPane.setPadding(new Insets(5));
+
+        //Player Pane
+        playerPane = new Pane();
+        playerPane.setPrefSize(INFO_WIDTH-10,INFO_HEIGHT*.5-10);
+        playerInfo = new Text();
+        playerInfo.setText("********************************************\n" + this.player.toString());
+        playerPane.getChildren().add(playerInfo);
+
+        //Equipment Pane
+        equipmentPane = new Pane();
+        equipmentPane.setPrefSize(INFO_WIDTH-10,INFO_HEIGHT*.5-10);
+        equipmentText = new Text();
+        equipmentText.setText("");
+        equipmentPane.getChildren().add(equipmentText);
+
+
+        infoPane.getChildren().addAll(equipmentPane,playerPane);
+        container.getChildren().addAll(gamePane,infoPane);
+        root.getChildren().addAll(contactPane,container,alertPane);
+
     }
 
     public Player getPlayer() {
@@ -272,11 +327,11 @@ public class ControllerFX extends Application implements GameView {
 
 
     public Map<String, Text> getLocateNodes() {
-        return locateNodes;
+        return NODES;
     }
 
     public Map<String, Goblin> getGoblins() {
-        return goblins;
+        return GOBLINS;
     }
 
     public void setPlayer(Player player) {
@@ -285,7 +340,7 @@ public class ControllerFX extends Application implements GameView {
 
 
     public Text getContactText() {
-        return contactText;
+        return CONTACT_TEXT;
     }
 
     public HBox getContainer() {
@@ -293,11 +348,11 @@ public class ControllerFX extends Application implements GameView {
     }
 
     public Map<String, Human> getHumans() {
-        return humans;
+        return HUMANS;
     }
 
     public Map<String, TreasureChest> getChests() {
-        return chests;
+        return CHESTS;
     }
 
     public void setRounds(int rounds) {
@@ -312,6 +367,8 @@ public class ControllerFX extends Application implements GameView {
     public void setContainer(HBox container) {
         this.container = container;
     }
+
+
 
     @Override
     public void start(Stage stage) {
@@ -341,93 +398,32 @@ public class ControllerFX extends Application implements GameView {
                             playerInfo.setText("********************************************\n" + player.toString());
                         }
                     }
-                    if (goblins.isEmpty()){
+                    if (GOBLINS.isEmpty()){
                         gameBoard = new GameBoard();
                         rounds++;
                         gameBoard.setNumberOfGoblins(gameBoard.getNumberOfGoblins()+ rounds);
-                        contactText.setText("Great Job You have Won! All the Goblins have been killed within the round but now there are even more Goblins!\n" + gameBoard.getNumberOfGoblins() + " Goblins remain. ");
+                        CONTACT_TEXT.setText("Great Job You have Won! All the Goblins have been killed within the round but now there are even more Goblins!\n" + gameBoard.getNumberOfGoblins() + " Goblins remain. ");
                         if((rounds +1)%3==0){
-                            contactText.setText(contactText.getText() +"You have entered round "+(rounds+1)+" as a reward we have recruited an extra human for you!\nThis will happen for ever 3 rounds so don't mess this up...");
+                            CONTACT_TEXT.setText(CONTACT_TEXT.getText() +"You have entered round "+(rounds+1)+" as a reward we have recruited an extra human for you!\nThis will happen for ever 3 rounds so don't mess this up...");
                             addHuman++;
                         }
                         gameBoard.setNumberOfHumans(gameBoard.getNumberOfHumans() + addHuman);
                         newGame();
                     }
-                    if(player.getHealth()<=0 || findClosestNode(player.getY()+" "+ player.getX(),"*").isEmpty() || !player.isAlive()){
-                        contactText.setText(contactText.getText() + "You are Dead or rotting away. GAME OVER!");
+                    if(player.getHealth()<=0 || player.isTrapped() || !player.isAlive()){
+                        CONTACT_TEXT.setText(CONTACT_TEXT.getText() + "You are Dead or rotting away. GAME OVER!");
                         gameBoard = new GameBoard();
                         setRounds(0);
                         setAddHuman(0);
                         newGame();
                     }
                 }else {
-                    alertText.setText("Use an arrow key: N/S/E/W");
+                    ALERT_TEXT.setText("Use an arrow key: N/S/E/W");
                 }
             }
         };
 
         scene.addEventHandler(KeyEvent.KEY_PRESSED, eventHandlerMovePlayer);
-
-    }
-
-    public void clearTextInfo(){
-        contactText.setText("");
-        alertText.setText("");
-        equipmentText.setText("");
-    }
-
-    private void setupGUI(){
-        //Main root
-        root = new VBox();
-        root.setPrefSize(ROOT_WIDTH,ROOT_HEIGHT);
-        root.setPadding(new Insets(56));
-        root.setSpacing(56);
-
-        //Container
-        container = new HBox();
-        container.setPrefSize(ROOT_WIDTH,GAME_HEIGHT);
-        container.setSpacing(56);
-
-        //Combat
-        contactPane = new Pane();
-        contactPane.setPrefSize(GAME_WIDTH,25);
-        contactText.setText("Use the arrow keys to move North/South/East/West.\n"
-                + "Watch out for the goblins and you can grab items by picking up\nDrops, Chest, or Equipments from the Humans.\n"
-                + "The Humans do not move but will attack the goblins when they come near them.\n"
-                + "Good luck and have fun!");
-        contactPane.getChildren().add(contactText);
-
-        //Alert
-        alertPane = new Pane();
-        alertPane.setPrefSize(GAME_WIDTH,25);
-        alertText.setText("");
-        alertText.setFill(Color.RED);
-        alertPane.getChildren().add(alertText);
-
-
-        //Info Pane
-        infoPane = new VBox();
-        infoPane.setPrefSize(INFO_WIDTH,INFO_HEIGHT);
-        infoPane.setPadding(new Insets(5));
-
-        //Player Pane
-        playerPane = new Pane();
-        playerPane.setPrefSize(INFO_WIDTH-10,INFO_HEIGHT*.5-10);
-        playerInfo = new Text();
-        playerInfo.setText("********************************************\n" + this.player.toString());
-        playerPane.getChildren().add(playerInfo);
-
-        //Equipment Pane
-        equipmentPane = new Pane();
-        equipmentPane.setPrefSize(INFO_WIDTH-10,INFO_HEIGHT*.5-10);
-        equipmentText = new Text();
-        equipmentText.setText("");
-        equipmentPane.getChildren().add(equipmentText);
-
-
-        infoPane.getChildren().addAll(equipmentPane,playerPane);
-        container.getChildren().addAll(gamePane,infoPane);
-        root.getChildren().addAll(contactPane,container,alertPane);
 
     }
     public static void main(String[] args) {

@@ -82,13 +82,13 @@ public class HumansVsGoblinsTest {
         controllerFX.setPlayer(new Player(3,3));
         int y = controllerFX.getPlayer().getY();
         int x = controllerFX.getPlayer().getX();
-        controllerFX.move((y-1) + " " + x,controllerFX.getPlayer());
+        controllerFX.getPlayer().move((y-1) + " " + x,controllerFX.getPlayer());
         assertEquals(y-1,controllerFX.getPlayer().getY(),"Move North Failed");
-        controllerFX.move(y + " " + x,controllerFX.getPlayer());
+        controllerFX.getPlayer().move(y + " " + x,controllerFX.getPlayer());
         assertEquals(y,controllerFX.getPlayer().getY(),"Move South Failed");
-        controllerFX.move(y + " " + (x-1),controllerFX.getPlayer());
+        controllerFX.getPlayer().move(y + " " + (x-1),controllerFX.getPlayer());
         assertEquals(x-1,controllerFX.getPlayer().getX(),"Move West Failed");
-        controllerFX.move(y + " " + x,controllerFX.getPlayer());
+        controllerFX.getPlayer().move(y + " " + x,controllerFX.getPlayer());
         assertEquals(x,controllerFX.getPlayer().getX(),"Move East Failed");
     }
 
@@ -97,14 +97,15 @@ public class HumansVsGoblinsTest {
     void swapLand(){
         int y = 3;
         int x = 3;
+        controllerFX.setPlayer(new Player(3,3));
         controllerFX.getLocateNodes().get(y + " " + x).setText("P");
-        controllerFX.swapLand(y+ " "+ x,(y-1) + " "+x);
+        controllerFX.getPlayer().swapLand(y+ " "+ x,(y-1) + " "+x);
         assertEquals(controllerFX.getLocateNodes().get((y-1) + " "+x).getText(),"P", "Swap land North Failed");
-        controllerFX.swapLand((y-1)+ " "+ x,y + " "+x);
+        controllerFX.getPlayer().swapLand((y-1)+ " "+ x,y + " "+x);
         assertEquals(controllerFX.getLocateNodes().get(y + " "+x).getText(),"P", "Swap land South Failed");
-        controllerFX.swapLand(y+ " "+ x,y + " "+(x-1));
+        controllerFX.getPlayer().swapLand(y+ " "+ x,y + " "+(x-1));
         assertEquals(controllerFX.getLocateNodes().get(y + " "+(x-1)).getText(),"P", "Swap land West Failed");
-        controllerFX.swapLand(y+ " "+ (x-1),y + " "+x);
+        controllerFX.getPlayer().swapLand(y+ " "+ (x-1),y + " "+x);
         assertEquals(controllerFX.getLocateNodes().get(y + " "+x).getText(),"P", "Swap land East Failed");
     }
 
@@ -113,14 +114,15 @@ public class HumansVsGoblinsTest {
     void findClosestNodeDirection(){
         int y = 3;
         int x = 3;
+        Goblin goblin = new Goblin(3,3);
         controllerFX.getLocateNodes().get((y-1) + " " + x).setText("G");
         controllerFX.getLocateNodes().get((y+1) + " " + x).setText("G");
         controllerFX.getLocateNodes().get(y + " " + (x-1)).setText("G");
         controllerFX.getLocateNodes().get(y + " " + (x+1)).setText("G");
-        assertEquals((y-1) + " " + x,controllerFX.findClosestNodeDirection(y+ " "+x,"G",Direction.NORTH), "Find node at Direction North failed");
-        assertEquals((y+1) + " " + x,controllerFX.findClosestNodeDirection(y+ " "+x,"G",Direction.SOUTH), "Find node at Direction South failed");
-        assertEquals(y + " " + (x-1),controllerFX.findClosestNodeDirection(y+ " "+x,"G",Direction.WEST), "Find node at Direction West failed");
-        assertEquals(y + " " + (x+1),controllerFX.findClosestNodeDirection(y+ " "+x,"G",Direction.EAST), "Find node at Direction East failed");
+        assertEquals((y-1) + " " + x,goblin.findClosestNodeDirection(y+ " "+x,"G",Direction.NORTH), "Find node at Direction North failed");
+        assertEquals((y+1) + " " + x,goblin.findClosestNodeDirection(y+ " "+x,"G",Direction.SOUTH), "Find node at Direction South failed");
+        assertEquals(y + " " + (x-1),goblin.findClosestNodeDirection(y+ " "+x,"G",Direction.WEST), "Find node at Direction West failed");
+        assertEquals(y + " " + (x+1),goblin.findClosestNodeDirection(y+ " "+x,"G",Direction.EAST), "Find node at Direction East failed");
     }
 
     @DisplayName("Test to find closest node")
@@ -128,17 +130,18 @@ public class HumansVsGoblinsTest {
     void findClosestNode(){
         int y = 3;
         int x = 3;
+        Goblin goblin = new Goblin(3,3);
         controllerFX.getLocateNodes().get((y-1) + " " + x).setText("G");
-        assertEquals((y-1) + " " + x,controllerFX.findClosestNode(y+ " "+x,"G"), "Find node North failed");
+        assertEquals((y-1) + " " + x,goblin.findClosestNode(y+ " "+x,"G"), "Find node North failed");
         controllerFX.getLocateNodes().get((y-1) + " " + x).setText("*");
         controllerFX.getLocateNodes().get((y+1) + " " + x).setText("G");
-        assertEquals((y+1) + " " + x,controllerFX.findClosestNode(y+ " "+x,"G"), "Find node South failed");
+        assertEquals((y+1) + " " + x,goblin.findClosestNode(y+ " "+x,"G"), "Find node South failed");
         controllerFX.getLocateNodes().get((y+1) + " " + x).setText("*");
         controllerFX.getLocateNodes().get(y + " " + (x-1)).setText("G");
-        assertEquals(y + " " +(x-1),controllerFX.findClosestNode(y+ " "+x,"G"), "Find node West failed");
+        assertEquals(y + " " +(x-1),goblin.findClosestNode(y+ " "+x,"G"), "Find node West failed");
         controllerFX.getLocateNodes().get(y + " " + (x-1)).setText("*");
         controllerFX.getLocateNodes().get(y + " " + (x+1)).setText("G");
-        assertEquals(y + " " +(x+1),controllerFX.findClosestNode(y+ " "+x,"G"), "Find node East failed");
+        assertEquals(y + " " +(x+1),goblin.findClosestNode(y+ " "+x,"G"), "Find node East failed");
     }
 
     @DisplayName("Test Goblin pursue player")
@@ -228,15 +231,15 @@ public class HumansVsGoblinsTest {
     void attachEquipment(){
         Player player = new Player(3,3);
         Human human = new Human(3,3);
-        player.attachEquipment(human.getInventory().get(human.getInventory().size()-1));
+        player.attachEquipment(human.getInventory().getItemsList().get(human.getInventory().getItemsList().size()-1));
         assertEquals(1,player.getInventory().size(),"Add inventory item failed");
         Drop drop = new Drop(3,3);
         player  = new Player(3,3);
-        player.attachEquipment(drop.getDrops().get(drop.getDrops().size()-1));
+        player.attachEquipment(drop.getItemsList().get(drop.getItemsList().size()-1));
         assertEquals(1,player.getInventory().size(),"Add drop item failed");
         TreasureChest chest = new TreasureChest(3,3);
         player  = new Player(3,3);
-        player.attachEquipment(chest.getChest().get(chest.getChest().size()-1));
+        player.attachEquipment(chest.getItemsList().get(chest.getItemsList().size()-1));
         assertEquals(1,player.getInventory().size(),"Add chest item failed");
     }
 

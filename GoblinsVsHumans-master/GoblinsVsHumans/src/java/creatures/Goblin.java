@@ -2,11 +2,11 @@ package creatures;
 
 import controller.Combat;
 import controller.Direction;
+import creatures.move.MoveGoblin;
 import items.Drop;
 import javafx.scene.paint.Color;
-import land.Land;
 
-public class Goblin extends Creature {
+public class Goblin extends Creature implements RemoveNode, MoveGoblin {
 
     private final Drop drop;
 
@@ -19,7 +19,7 @@ public class Goblin extends Creature {
     }
 
 
-    public Drop getDrops() {
+    public Drop getDrop() {
         return drop;
     }
 
@@ -27,24 +27,51 @@ public class Goblin extends Creature {
     public boolean attack(Creature player) {
         String combatResult = Combat.playerVsGoblin((Player)player, this);
         if (player.getHealth() <= 0) {
-            contactText.setText(combatResult);
+            CONTACT_TEXT.setText(combatResult);
             ((Player) player).setAlive(false);
         } else if (this.getHealth() <= 0) {
-            contactText.setText(combatResult);
+            CONTACT_TEXT.setText(combatResult);
             this.remove();
             return false;
         }
         return true;
     }
 
-    //Moves the goblin and returns if the goblin moves
-    public boolean moveToPlayer(Player player){
+    @Override
+    public void remove(){
+        int y = this.getY();
+        int x = this.getX();
+        this.getDrop().setY(y);
+        this.getDrop().setX(x);
+
+        //Place Drop when goblin dies
+        DROPS.put(y+" "+ x,this.getDrop());
+        NODES.get(y+" "+ x).setFill(Color.DARKRED);
+        NODES.get(y+" "+ x).setText("D");
+        CONTACT_TEXT.setText(CONTACT_TEXT.getText() + (GOBLINS.size()-1) + " goblins remain. ");
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+        result += "Symbol: " + this.getSymbol() + "\n";
+        result += "Position: " + "y = " + this.getY() + ", " + "x = " + this.getX() + "\n";
+        result += "Health: " + this.getHealth() + "\n";
+        result += "Strength: " + this.getStrength() + "\n\n";
+        result += "DROPS: " + "\n\n";
+        result += DROPS.toString();
+        return result;
+    }
+
+    //Goblin pursues player
+    @Override
+    public boolean moveMe(Player player) {
         int curY = this.getY();
         int curX = this.getX();
 
         String curPlayer = findClosestNode(curY + " "+ curX,"P");
         if (!curPlayer.isEmpty()) {
-           return attack(player);
+            return attack(player);
 
         }else if (player.getY()<curY && !findClosestNodeDirection(curY + " "+ curX,"*", Direction.NORTH).isEmpty()){
             move((curY-1)+ " "+ curX,this);
@@ -57,29 +84,4 @@ public class Goblin extends Creature {
         }
         return true;
     }
-    public void remove(){
-        int y = this.getY();
-        int x = this.getX();
-        this.getDrops().setY(y);
-        this.getDrops().setX(x);
-
-        //Place Drop when goblin dies
-        drops.put(y+" "+ x,this.getDrops());
-        locateNodes.get(y+" "+ x).setFill(Color.DARKRED);
-        locateNodes.get(y+" "+ x).setText("D");
-        contactText.setText(contactText.getText() + (goblins.size()-1) + " goblins remain. ");
-    }
-
-    @Override
-    public String toString() {
-        String result = "";
-        result += "Symbol: " + this.getSymbol() + "\n";
-        result += "Position: " + "y = " + this.getY() + ", " + "x = " + this.getX() + "\n";
-        result += "Health: " + this.getHealth() + "\n";
-        result += "Strength: " + this.getStrength() + "\n\n";
-        result += "DROPS: " + "\n\n";
-        result += drops.toString();
-        return result;
-    }
-
 }
